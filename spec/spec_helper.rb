@@ -18,10 +18,12 @@
 
 # :nocov:
 if ENV['COVERAGE'] || ENV['CI']
+  require 'codecov'
   require 'simplecov'
 
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
     [
+      SimpleCov::Formatter::Codecov,
       SimpleCov::Formatter::HTMLFormatter
     ]
   )
