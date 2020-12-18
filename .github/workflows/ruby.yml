@@ -100,4 +100,5 @@ jobs:
       - name: CodeCov
         uses: codecov/codecov-action@v1
         with:
-          directory: ./coverage/
+          directory: coverage
+          file: ./coverage/.resultset.json
