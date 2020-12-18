@@ -18,6 +18,13 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:13.1-alpine
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -26,6 +33,9 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.7.2
+    - name: Install required apt packages
+      run: |
+        sudo apt-get -yqq install libpq-dev
     - uses: actions/cache@v2
       with:
         path: vendor/bundle
@@ -42,5 +52,16 @@ jobs:
       run: bundle exec bundle-audit
     - name: Brakeman
       run: bundle exec brakeman
+    - name: Setup DB
+      env:
+        PGHOST: 127.0.0.1
+        PGUSER: postgres
+        RAILS_ENV: test
+      run: |
+        bin/rails db:setup
+        bin/rails db:migrate
     - name: Run tests
+      env:
+        RAILS_ENV: test
+        COVERAGE: true
       run: bundle exec rspec
