@@ -97,8 +97,3 @@ jobs:
           PGPASSWORD: postgres
           COVERAGE: true
         run: bundle exec rspec
-      - name: CodeCov
-        uses: codecov/codecov-action@v1
-        with:
-          directory: coverage
-          file: ./coverage/.resultset.json
