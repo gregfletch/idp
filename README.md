@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/gregfletch/idp/branch/main/graph/badge.svg?token=JKHA695S5K)](https://codecov.io/gh/gregfletch/idp) ![Build](https://github.com/gregfletch/idp/actions/workflows/Ruby/badge.svg)
+
 # README
 
 This is a simple identity provider (IdP) service. In this README you will find instructions to setup a Ruby environment, install dependencies, run the server, and run the tests.
