@@ -18,6 +18,7 @@
 
 # :nocov:
 if ENV['COVERAGE'] || ENV['CI']
+  require 'codecov'
   require 'simplecov'
 
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
