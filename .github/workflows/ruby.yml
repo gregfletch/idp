@@ -87,7 +87,7 @@ jobs:
           PGHOST: 127.0.0.1
           PGUSER: postgres
           RAILS_ENV: test
-        run: bundle exec rails db:setup
+        run: bundle exec rake db:setup
       - name: Run tests
         env:
           RAILS_ENV: test
