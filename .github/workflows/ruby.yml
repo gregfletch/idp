@@ -14,8 +14,38 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  linters:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+      - name: Ruby gem cache
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Install gems
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+
+      - name: Rubocop
+        run: bundle exec rubocop --parallel
+      - name: Bundle Audit
+        run: bundle exec bundler-audit --update
+      - name: Brakeman
+        run: bundle exec brakeman -q
+
+  test:
+    name: Unit Tests
     runs-on: ubuntu-latest
 
     services:
@@ -25,6 +55,7 @@ jobs:
           - 5432:5432
         env:
           POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
           # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -33,42 +64,32 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-    # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-    # change this to (see https://github.com/ruby/setup-ruby#versioning):
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.7.2
-    - name: Install required apt packages
-      run: |
-        sudo apt-get -yqq install libpq-dev
-    - uses: actions/cache@v2
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
-    - name: Install dependencies
-      run: |
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
-    - name: Rubocop
-      run: bundle exec rubocop
-    - name: Bundle audit
-      run: bundle exec bundle-audit
-    - name: Brakeman
-      run: bundle exec brakeman
-    - name: Setup DB
-      env:
-        PGHOST: 127.0.0.1
-        PGUSER: postgres
-        RAILS_ENV: test
-      run: |
-        bundle exec rails db:setup
-        bundle exec rails db:migrate
-    - name: Run tests
-      env:
-        RAILS_ENV: test
-        COVERAGE: true
-      run: bundle exec rspec
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+      - name: Install required apt packages
+        run: sudo apt-get -yqq install libpq-dev
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Install dependencies
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+      - name: Setup DB
+        env:
+          PGHOST: 127.0.0.1
+          PGUSER: postgres
+          RAILS_ENV: test
+        run: bundle exec rails db:setup
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          COVERAGE: true
+        run: bundle exec rspec
