@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/gregfletch/idp/branch/main/graph/badge.svg?token=JKHA695S5K)](https://codecov.io/gh/gregfletch/idp) ![Build](https://github.com/gregfletch/idp/actions/workflows/Ruby/badge.svg)
+[![codecov](https://codecov.io/gh/gregfletch/idp/branch/main/graph/badge.svg?token=JKHA695S5K)](https://codecov.io/gh/gregfletch/idp) ![Build](https://github.com/gregfletch/idp/workflows/Ruby/badge.svg)
 
 # README
 
