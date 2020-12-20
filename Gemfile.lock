@@ -141,6 +141,8 @@ GEM
     puma (5.1.1)
       nio4r (~> 2.0)
     rack (2.2.3)
+    rack-cors (1.1.1)
+      rack (>= 2.0.0)
     rack-mini-profiler (2.2.0)
       rack (>= 1.2.0)
     rack-test (1.1.0)
@@ -292,6 +294,7 @@ DEPENDENCIES
   listen
   pg
   puma
+  rack-cors
   rack-mini-profiler
   rails
   rspec

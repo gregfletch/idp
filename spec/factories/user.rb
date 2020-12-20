@@ -8,4 +8,13 @@ FactoryBot.define do
     username { Faker::Internet.username }
     password { Faker::Internet.password }
   end
+
+  trait :unconfirmed_user do
+    confirmation_token { SecureRandom.base58(18) }
+  end
+
+  trait :confirmed_user do
+    confirmation_token { SecureRandom.base58(18) }
+    confirmed_at { Time.now.utc.iso8601 }
+  end
 end

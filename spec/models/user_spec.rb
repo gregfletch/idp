@@ -54,18 +54,6 @@ RSpec.describe User do
     expect(user.errors[:last_name]).to include('is too long (maximum is 128 characters)')
   end
 
-  it 'fails validation without username' do
-    user = build(:user, username: nil)
-    user.validate
-    expect(user.errors[:username]).to include('can\'t be blank')
-  end
-
-  it 'fails validation if username is shorter than minimum length' do
-    user = build(:user, username: '')
-    user.validate
-    expect(user.errors[:username]).to include('is too short (minimum is 1 character)')
-  end
-
   it 'fails validation if username is longer than max length' do
     user = build(:user, username: 'a' * (name_max_length + 1))
     user.validate
@@ -257,5 +245,10 @@ RSpec.describe User do
     user = build(:user, last_sign_in_ip: 'a')
     user.validate
     expect(user.errors[:last_sign_in_ip]).to include('is invalid')
+  end
+
+  it 'sets the username value to email address if no username was provided before saving' do
+    user = create(:user, username: nil)
+    expect(user.username).to eq(user.email)
   end
 end

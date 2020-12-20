@@ -18,4 +18,12 @@ class User < ApplicationRecord
   validates :last_sign_in_ip, format: { with: Regexp.union(Resolv::IPv4::Regex, Resolv::IPv6::Regex) },
                               allow_blank: true
   validates :password, password_composition: true
+
+  before_validation :set_username_if_missing
+
+  private
+
+  def set_username_if_missing
+    self.username = email if username.blank?
+  end
 end
