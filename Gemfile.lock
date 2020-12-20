@@ -105,6 +105,7 @@ GEM
     ffi (1.13.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    graphql (1.11.6)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     jbuilder (2.10.1)
@@ -289,6 +290,7 @@ DEPENDENCIES
   devise
   factory_bot_rails
   faker
+  graphql
   jbuilder (~> 2.7)
   letter_opener
   listen

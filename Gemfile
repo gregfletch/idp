@@ -27,6 +27,8 @@ gem 'bundler-audit'
 
 gem 'devise'
 
+gem 'graphql'
+
 gem 'rack-cors'
 
 group :development, :test do
