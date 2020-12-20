@@ -8,10 +8,15 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# rubocop:disable Style/ClassAndModuleChildren
 module Idp
   class Application < Rails::Application
+    config.api_only = true
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
+
+    config.autoload_paths += %W[#{config.root}/lib]
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -22,3 +27,4 @@ module Idp
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
+# rubocop:enable Style/ClassAndModuleChildren

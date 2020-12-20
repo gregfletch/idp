@@ -27,23 +27,6 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
 
-Style/ArgumentsForwarding:
-  Enabled: true
-Style/CollectionCompact:
-  Enabled: true
-Style/Documentation:
-  Enabled: false
-Style/DocumentDynamicEvalDefinition:
-  Enabled: true
-Style/NegatedIfElseCondition:
-  Enabled: true
-Style/NilLambda:
-  Enabled: true
-Style/RedundantArgument:
-  Enabled: true
-Style/SwapValues:
-  Enabled: true
-
 Performance/AncestorsInclude:
   Enabled: true
 Performance/BigDecimalWithNumericArgument:
@@ -106,4 +89,26 @@ Rails/WhereEquals:
 Rails/WhereExists:
   Enabled: true
 Rails/WhereNot:
+  Enabled: true
+
+RSpec/ExampleLength:
+  Max: 10
+
+Style/ArgumentsForwarding:
+  Enabled: true
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+Style/CollectionCompact:
+  Enabled: true
+Style/Documentation:
+  Enabled: false
+Style/DocumentDynamicEvalDefinition:
+  Enabled: true
+Style/NegatedIfElseCondition:
+  Enabled: true
+Style/NilLambda:
+  Enabled: true
+Style/RedundantArgument:
+  Enabled: true
+Style/SwapValues:
   Enabled: true
