@@ -7,8 +7,8 @@ class User < ApplicationRecord
          :lockable, :timeoutable
 
   validates :username, presence: true, length: 1..128, uniqueness: true
-  validates :first_name, presence: true, length: 1..128
-  validates :last_name, presence: true, length: 1..128
+  validates :first_name, presence: true, length: 1..128, name: true
+  validates :last_name, presence: true, length: 1..128, name: true
   validates :email, presence: true, length: 1..255, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :encrypted_password, presence: true
   validates :sign_in_count, presence: true, numericality: true
@@ -20,6 +20,10 @@ class User < ApplicationRecord
   validates :password, password_composition: true
 
   before_validation :set_username_if_missing
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 
   private
 

@@ -9,7 +9,7 @@ RSpec.describe Users::SessionsController do
     # rubocop:enable RSpec/InstanceVariable
   end
 
-  let(:user) { create(:user, :confirmed_user) }
+  let(:user) { create(:user, :confirmed_user, password: 'Password1') }
   let(:params) do
     {
       user: {

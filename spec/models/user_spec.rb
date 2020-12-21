@@ -36,6 +36,12 @@ RSpec.describe User do
     expect(user.errors[:first_name]).to include('is too long (maximum is 128 characters)')
   end
 
+  it 'fails validation if first_name contains invalid characters' do
+    user = build(:user, first_name: "#{Faker::Name.first_name}$")
+    user.validate
+    expect(user.errors[:first_name]).to include('contains invalid characters')
+  end
+
   it 'fails validation without last_name' do
     user = build(:user, last_name: nil)
     user.validate
@@ -52,6 +58,17 @@ RSpec.describe User do
     user = build(:user, last_name: 'a' * (name_max_length + 1))
     user.validate
     expect(user.errors[:last_name]).to include('is too long (maximum is 128 characters)')
+  end
+
+  it 'fails validation if last_name contains invalid characters' do
+    user = build(:user, last_name: "#{Faker::Name.last_name}$")
+    user.validate
+    expect(user.errors[:last_name]).to include('contains invalid characters')
+  end
+
+  it 'returns concatenation of first and last name when calling full_name convenience method' do
+    user = build(:user)
+    expect(user.full_name).to eq("#{user.first_name} #{user.last_name}")
   end
 
   it 'fails validation if username is longer than max length' do
