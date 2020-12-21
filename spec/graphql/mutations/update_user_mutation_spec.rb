@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Mutations::UpdateUserMutation do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, password: 'Password1') }
   let(:query) do
     %(mutation {
       updateUser(id: "#{user.id}", firstName: "Modified", lastName: "Updated") {
