@@ -60,22 +60,22 @@ RSpec.describe Types::QueryType do
 
     it 'returns all users' do
       result = IdpSchema.execute(query).as_json
-      expect(result.dig('data', 'users')).to match_array(users.map { |user| { id: user.id }.with_indifferent_access })
+      expect(result.with_indifferent_access.dig(:data, :users)).to match_array(users.map { |user| { id: user.id }.with_indifferent_access })
     end
 
     it 'returns all users matching email argument' do
       result = IdpSchema.execute(query_by_email).as_json
-      expect(result.dig('data', 'users')).to match_array([{ id: first_user.id }.with_indifferent_access])
+      expect(result.with_indifferent_access.dig(:data, :users)).to match_array([{ id: first_user.id }.with_indifferent_access])
     end
 
     it 'returns all users matching id argument' do
       result = IdpSchema.execute(query_by_id).as_json
-      expect(result.dig('data', 'users')).to match_array([{ id: first_user.id }.with_indifferent_access])
+      expect(result.with_indifferent_access.dig(:data, :users)).to match_array([{ id: first_user.id }.with_indifferent_access])
     end
 
     it 'sets fullName field as concatenation of first_name and last_name' do
       result = IdpSchema.execute(query_by_id_with_full_name).as_json
-      expect(result.dig('data', 'users')).to match_array([{
+      expect(result.with_indifferent_access.dig(:data, :users)).to match_array([{
         id: first_user.id,
         fullName: "#{first_user.first_name} #{first_user.last_name}"
       }.with_indifferent_access])
@@ -83,7 +83,7 @@ RSpec.describe Types::QueryType do
 
     it 'sets confirmed field as boolean value' do
       result = IdpSchema.execute(query_by_id_with_confirmed).as_json
-      expect(result.dig('data', 'users')).to match_array([{
+      expect(result.with_indifferent_access.dig(:data, :users)).to match_array([{
         id: first_user.id,
         confirmed: first_user.confirmed_at.present?
       }.with_indifferent_access])
@@ -91,7 +91,7 @@ RSpec.describe Types::QueryType do
 
     it 'returns an empty array if no matches' do
       result = IdpSchema.execute(query_no_matches).as_json
-      expect(result.dig('data', 'users')).to eq([])
+      expect(result.with_indifferent_access.dig(:data, :users)).to eq([])
     end
   end
 end

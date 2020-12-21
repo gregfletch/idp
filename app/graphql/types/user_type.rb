@@ -9,7 +9,6 @@ class Types::UserType < Types::BaseObject
   field :created_at, GraphQL::Types::ISO8601DateTime, null: false
   field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
   field :email, String, null: false
-  field :encrypted_password, String, null: false
   field :reset_password_token, String, null: true
   field :reset_password_sent_at, GraphQL::Types::ISO8601DateTime, null: true
   field :remember_created_at, GraphQL::Types::ISO8601DateTime, null: true
@@ -26,10 +25,6 @@ class Types::UserType < Types::BaseObject
   field :unlock_token, String, null: true
   field :locked_at, GraphQL::Types::ISO8601DateTime, null: true
   field :confirmed, Boolean, null: false
-
-  def full_name
-    [object.first_name, object.last_name].compact.join(' ')
-  end
 
   def confirmed
     object.confirmed_at.present?
