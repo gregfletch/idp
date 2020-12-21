@@ -5,7 +5,7 @@ require 'rails_helper'
 # rubocop:disable RSpec/MultipleMemoizedHelpers:
 RSpec.describe Types::QueryType do
   describe 'users' do
-    let!(:users) { create_pair(:user) }
+    let!(:users) { create_pair(:user, password: 'Password1') }
     let!(:first_user) { users.first }
 
     let(:query) do
