@@ -5,7 +5,11 @@ require:
 
 Layout/LineLength:
   Max: 160
+Layout/SpaceBeforeBrackets:
+  Enabled: true
 
+Lint/AmbiguousAssignment:
+  Enabled: true
 Lint/DuplicateBranch:
   Enabled: true
 Lint/DuplicateRegexpCharacterClassElement:
@@ -103,6 +107,8 @@ Style/CollectionCompact:
 Style/Documentation:
   Enabled: false
 Style/DocumentDynamicEvalDefinition:
+  Enabled: true
+Style/HashExcept:
   Enabled: true
 Style/NegatedIfElseCondition:
   Enabled: true
