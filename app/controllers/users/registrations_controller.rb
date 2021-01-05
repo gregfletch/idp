@@ -57,18 +57,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # rubocop:disable Metrics/AbcSize
   def validate_sign_up_params
-    errors = {}
-    errors[:email] = 'Email is missing' if params.dig(:user, :email).blank?
-    errors[:password] = 'Password is missing' if params.dig(:user, :password).blank?
-    errors[:first_name] = 'First name is missing' if params.dig(:user, :first_name).blank?
-    errors[:last_name] = 'Last name is missing' if params.dig(:user, :last_name).blank?
+    errors = []
+    errors << { error: 'Email is missing' } if params.dig(:user, :email).blank?
+    errors << { error: 'Password is missing' } if params.dig(:user, :password).blank?
+    errors << { error: 'First name is missing' } if params.dig(:user, :first_name).blank?
+    errors << { error: 'Last name is missing' } if params.dig(:user, :last_name).blank?
 
     render json: { errors: errors }, status: :bad_request if errors.present?
   end
   # rubocop:enable Metrics/AbcSize
 
   def handle_error_response_create(resource)
-    render json: { errors: resource.errors.errors.each.map { |e| [e.attribute, e.type] }.to_h }, status: :bad_request
+    render json: { errors: [resource.errors.errors.each.map { |e| ['error', e.full_message] }.to_h] }, status: :bad_request
   end
 
   # Override super class method to prevent errors if a user hits an endpoint that we have not implemented/are not

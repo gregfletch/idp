@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
+  before_action :doorkeeper_authorize!, only: :execute
+  before_action :user_authorized?, only: :execute
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,
   # but you'll have to authenticate your user separately
   # protect_from_forgery with: :null_session
 
   def execute
-    variables = prepare_variables(params[:variables])
     query = params[:query]
     operation_name = params[:operationName]
     context = {
@@ -17,9 +18,7 @@ class GraphqlController < ApplicationController
     result = IdpSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
   rescue StandardError => e
-    raise e unless Rails.env.development?
-
-    handle_error_in_development e
+    render json: { errors: [{ error: e.message }] }, status: :bad_request
   end
 
   private
@@ -35,22 +34,28 @@ class GraphqlController < ApplicationController
         {}
       end
     when Hash
+      # :nocov:
       variables_param
+      # :nocov:
     when ActionController::Parameters
       variables_param.to_unsafe_hash # GraphQL-Ruby will validate name and type of incoming variables.
     when nil
       {}
     else
+      # :nocov:
       raise ArgumentError, "Unexpected parameter: #{variables_param}"
+      # :nocov:
     end
   end
   # rubocop:enable Metrics/MethodLength
 
-  def handle_error_in_development(error)
-    logger.error error.message
-    logger.error error.backtrace.join("\n")
+  def user_authorized?
+    return render json: { errors: [{ error: 'Unauthorized' }] }, status: :unauthorized if variables[:email].present? && variables[:email] != current_user.email
 
-    render json: { errors: [{ message: error.message, backtrace: error.backtrace }], data: {} },
-           status: :internal_server_error
+    render json: { errors: [{ error: 'Unauthorized' }] }, status: :unauthorized if variables[:id] && variables[:id] != current_user.id
+  end
+
+  def variables
+    @variables ||= prepare_variables(params[:variables])
   end
 end

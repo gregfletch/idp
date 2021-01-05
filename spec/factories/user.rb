@@ -17,4 +17,8 @@ FactoryBot.define do
     confirmation_token { SecureRandom.base58(18) }
     confirmed_at { Time.now.utc.iso8601 }
   end
+
+  trait :skip_validate do
+    to_create { |instance| instance.save(validate: false) }
+  end
 end

@@ -21,8 +21,22 @@ class User < ApplicationRecord
 
   before_validation :set_username_if_missing
 
+  has_many :access_grants, class_name: 'Doorkeeper::AccessGrant', foreign_key: :resource_owner_id, dependent: :delete_all, inverse_of: false
+  has_many :access_tokens, class_name: 'Doorkeeper::AccessToken', foreign_key: :resource_owner_id, dependent: :delete_all, inverse_of: false
+
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def self.authenticate(email, password)
+    user = User.find_for_authentication(email: email)
+    return nil if user.blank?
+
+    user.active_for_authentication? && user.valid_password?(password) ? user : nil
+  end
+
+  def active_for_authentication?
+    confirmed_at.present?
   end
 
   private

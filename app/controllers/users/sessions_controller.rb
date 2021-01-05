@@ -4,19 +4,19 @@ class Users::SessionsController < Devise::SessionsController
   prepend_before_action :already_authenticated?, only: :create
   prepend_before_action :verify_signed_out_user, only: :destroy
 
-  # GET /resource/sign_in
+  # GET /users/sign_in
   def new
     render json: { errors: [{ error: 'Not found' }] }, status: :not_found
   end
 
-  # POST /resource/sign_in
+  # POST /users/sign_in
   def create
     self.resource = warden.authenticate!(auth_options)
     sign_in(resource_name, resource)
     render json: { result: { message: 'Success' } }, status: :ok
   end
 
-  # DELETE /resource/sign_out
+  # DELETE /users/sign_out
   def destroy
     Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
     self.resource = nil

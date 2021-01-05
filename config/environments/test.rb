@@ -61,4 +61,10 @@ Rails.application.configure do
   # config.action_view.annotate_rendered_view_with_filenames = true
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  config.hosts << 'idp.app.lvh.me'
+
+  config.issuer = 'http://idp.app.lvh.me:3000'
+  config.audience = 'http://idp.app.lvh.me:3000'
+  config.subject = 'http://graphql.app.lvh.me:4200'
 end

@@ -103,6 +103,8 @@ Rails/WhereNot:
 
 RSpec/ExampleLength:
   Max: 10
+RSpec/NestedGroups:
+  Max: 5
 
 Style/ArgumentsForwarding:
   Enabled: true

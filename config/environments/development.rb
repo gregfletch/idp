@@ -81,5 +81,10 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.hosts << 'idp.app.lvh.me'
+
+  config.issuer = 'http://idp.app.lvh.me:3000'
+  config.audience = 'http://idp.app.lvh.me:3000'
+  config.subject = 'http://graphql.app.lvh.me:4200'
 end
 # rubocop:enable Metrics/BlockLength
