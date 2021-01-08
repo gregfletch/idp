@@ -10,6 +10,8 @@ Layout/SpaceBeforeBrackets:
 
 Lint/AmbiguousAssignment:
   Enabled: true
+Lint/DeprecatedConstants:
+  Enabled: true
 Lint/DuplicateBranch:
   Enabled: true
 Lint/DuplicateRegexpCharacterClassElement:
@@ -18,7 +20,11 @@ Lint/EmptyBlock:
   Enabled: true
 Lint/EmptyClass:
   Enabled: true
+Lint/LambdaWithoutLiteralBlock:
+  Enabled: true
 Lint/NoReturnInBeginEndBlocks:
+  Enabled: true
+Lint/RedundantDirGlobSort:
   Enabled: true
 Lint/ToEnumArguments:
   Enabled: true
@@ -107,6 +113,8 @@ Style/CollectionCompact:
 Style/Documentation:
   Enabled: false
 Style/DocumentDynamicEvalDefinition:
+  Enabled: true
+Style/EndlessMethod:
   Enabled: true
 Style/HashExcept:
   Enabled: true
