@@ -8,4 +8,11 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Doorkeeper::Application.create!(name: 'GraphQL IdP', redirect_uri: 'urn:ietf:wg:oauth:2.0:oob', scopes: 'api:graphql') unless Rails.env.production?
+unless Rails.env.production?
+  Doorkeeper::Application.create!(confidential: false,
+                                  name: 'GraphQL IdP',
+                                  redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
+                                  scopes: 'api:graphql',
+                                  secret: 'FnbeX58oZj5uJZTtmTPJ52reY3Zh2j7UZx3M7qVDwpRG2Em2L13MDpsv1vnrL1QE',
+                                  uid: 'A4hde2LqQeXWALkjkQp1YhWG')
+end
