@@ -26,8 +26,12 @@ gem 'bootsnap'
 gem 'bundler-audit'
 
 gem 'devise'
+gem 'doorkeeper'
+gem 'doorkeeper-jwt'
 
 gem 'graphql'
+
+gem 'json-jwt'
 
 gem 'rack-cors'
 

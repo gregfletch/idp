@@ -17,7 +17,7 @@ class AuthFailure < Devise::FailureApp
     self.content_type = 'json'
     self.response_body = {
       errors: [
-        login: error_message
+        error: error_message
       ]
     }.to_json
   end

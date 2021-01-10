@@ -13,7 +13,7 @@ RSpec.describe Users::ConfirmationsController do
   # #GET /users/confirmation
   #
   describe 'get #show' do
-    let(:user) { create(:user, :unconfirmed_user) }
+    let(:user) { create(:user, :unconfirmed_user, :skip_validate) }
     let(:params) { { confirmation_token: user.confirmation_token } }
 
     it 'sets the confirmed_at timestamp on success' do
