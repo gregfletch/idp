@@ -72,9 +72,9 @@ RSpec.describe User do
   end
 
   it 'fails validation if username is longer than max length' do
-    user = build(:user, username: 'a' * (name_max_length + 1))
+    user = build(:user, username: 'a' * (email_max_length + 1))
     user.validate
-    expect(user.errors[:username]).to include('is too long (maximum is 128 characters)')
+    expect(user.errors[:username]).to include('is too long (maximum is 255 characters)')
   end
 
   it 'fails validation if username is not unique' do

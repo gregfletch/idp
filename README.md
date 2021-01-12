@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/gregfletch/idp/branch/main/graph/badge.svg?token=JKHA695S5K)](https://codecov.io/gh/gregfletch/idp) ![Build](https://github.com/gregfletch/idp/workflows/Ruby/badge.svg)
+[![codecov](https://codecov.io/gh/gregfletch/idp/branch/main/graph/badge.svg?token=JKHA695S5K)](https://codecov.io/gh/gregfletch/idp) ![Build](https://github.com/gregfletch/idp/workflows/Ruby/badge.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/9ed347443e451f37da8b/maintainability)](https://codeclimate.com/github/gregfletch/idp/maintainability) [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
 
 # README
 

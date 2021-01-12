@@ -6,7 +6,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :trackable, :confirmable,
          :lockable, :timeoutable
 
-  validates :username, presence: true, length: 1..128, uniqueness: true
+  validates :username, presence: true, length: 1..255, uniqueness: true
   validates :first_name, presence: true, length: 1..128, name: true
   validates :last_name, presence: true, length: 1..128, name: true
   validates :email, presence: true, length: 1..255, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
