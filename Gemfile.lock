@@ -114,8 +114,6 @@ GEM
     graphql (1.12.0)
     i18n (1.8.7)
       concurrent-ruby (~> 1.0)
-    jbuilder (2.10.1)
-      activesupport (>= 5.0.0)
     json-jwt (1.13.0)
       activesupport (>= 4.2)
       aes_key_wrap
@@ -242,16 +240,6 @@ GEM
     rubocop_runner (2.2.0)
     ruby-progressbar (1.11.0)
     rubyzip (2.3.0)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
@@ -270,7 +258,6 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     thor (1.0.1)
-    tilt (2.0.10)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.0.0)
@@ -308,7 +295,6 @@ DEPENDENCIES
   factory_bot_rails
   faker
   graphql
-  jbuilder (~> 2.7)
   json-jwt
   letter_opener
   listen
@@ -324,7 +310,6 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   rubocop_runner
-  sass-rails
   selenium-webdriver
   simplecov
   spring
