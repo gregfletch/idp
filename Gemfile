@@ -44,6 +44,7 @@ end
 
 group :development do
   gem 'letter_opener'
+  gem 'letter_opener_web'
   # Display performance information such as SQL time and flame graphs for each request in your browser.
   # Can be configured to work on production as well see: https://github.com/MiniProfiler/rack-mini-profiler/blob/master/README.md
   gem 'listen'
