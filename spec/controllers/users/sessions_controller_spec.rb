@@ -33,6 +33,11 @@ RSpec.describe Users::SessionsController do
       expect(User.last.current_sign_in_at).not_to be_nil
     end
 
+    it 'returns a well-defined response format on success' do
+      post :create, params: params
+      expect(JSON.parse(response.body, symbolize_names: true)).to eq({ result: { message: 'Success', user: { id: user.id } } })
+    end
+
     it 'sets the current_sign_in_ip  on success' do
       post :create, params: params
       expect(User.last.current_sign_in_ip).to match(Resolv::IPv4::Regex)
