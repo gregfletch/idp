@@ -7,7 +7,9 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    User.find_by(params[:email])
+    # :nocov:
+    User.find_by(email: params[:email])
+    # :nocov:
   end
 
   resource_owner_from_credentials do |_routes|
