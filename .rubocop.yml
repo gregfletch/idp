@@ -24,7 +24,15 @@ Lint/LambdaWithoutLiteralBlock:
   Enabled: true
 Lint/NoReturnInBeginEndBlocks:
   Enabled: true
+Lint/NumberedParameterAssignment:
+  Enabled: true
+Lint/OrAssignmentToConstant:
+  Enabled: true
 Lint/RedundantDirGlobSort:
+  Enabled: true
+Lint/SymbolConversion:
+  Enabled: true
+Lint/TripleQuotes:
   Enabled: true
 Lint/ToEnumArguments:
   Enabled: true
@@ -119,6 +127,8 @@ Style/DocumentDynamicEvalDefinition:
 Style/EndlessMethod:
   Enabled: true
 Style/HashExcept:
+  Enabled: true
+Style/IfWithBooleanLiteralBranches:
   Enabled: true
 Style/NegatedIfElseCondition:
   Enabled: true
