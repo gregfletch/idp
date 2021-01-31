@@ -4,6 +4,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins 'graphql.app.lvh.me:4200'
     resource '/graphql', headers: :any, methods: %i[post options]
+    resource '/oauth/authorize', headers: :any, methods: %i[post options]
     resource '/oauth/revoke', headers: :any, methods: %i[post options]
     resource '/oauth/token', headers: :any, methods: %i[post options]
     resource '/users', headers: :any, methods: %i[post options]
