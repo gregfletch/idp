@@ -114,25 +114,49 @@ RSpec.describe Users::SessionsController do
   # #DELETE /users/sign_out
   #
   describe 'sign_out' do
-    it 'returns no_content if sign_out is called with no active session' do
-      delete :destroy
-      expect(response).to have_http_status(:no_content)
+    context 'when unauthorized' do
+      it 'returns unauthorized if no access token included the Authorization header' do
+        delete :destroy
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'returns forbidden if provided scopes are invalid' do
+        access_token = create(:doorkeeper_access_token, scopes: 'api:unknown', resource_owner_id: user.id)
+        allow(controller).to receive(:doorkeeper_token) { access_token }
+        request.headers[:Authorization] = "Bearer #{access_token}"
+        delete :destroy
+        expect(response).to have_http_status(:forbidden)
+      end
     end
 
-    it 'returns no_content on success' do
-      post :create, params: params
+    context 'when authorized' do
+      let(:access_token) { create(:doorkeeper_access_token, resource_owner_id: user.id) }
 
-      delete :destroy
-      expect(response).to have_http_status(:no_content)
-    end
+      before do
+        allow(controller).to receive(:doorkeeper_token) { access_token }
+        request.headers[:Authorization] = "Bearer #{access_token.token}"
+      end
 
-    it 'returns no_content if only signing out user scope' do
-      allow(Devise).to receive(:sign_out_all_scopes).and_return(false)
+      it 'returns no_content if sign_out is called with no active session' do
+        delete :destroy
+        expect(response).to have_http_status(:no_content)
+      end
 
-      post :create, params: params
+      it 'returns no_content on success' do
+        post :create, params: params
 
-      delete :destroy
-      expect(response).to have_http_status(:no_content)
+        delete :destroy
+        expect(response).to have_http_status(:no_content)
+      end
+
+      it 'returns no_content if only signing out user scope' do
+        allow(Devise).to receive(:sign_out_all_scopes).and_return(false)
+
+        post :create, params: params
+
+        delete :destroy
+        expect(response).to have_http_status(:no_content)
+      end
     end
   end
 

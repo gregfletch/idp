@@ -2,7 +2,7 @@
 
 class Users::SessionsController < Devise::SessionsController
   prepend_before_action :already_authenticated?, only: :create
-  prepend_before_action :verify_signed_out_user, only: :destroy
+  prepend_before_action :doorkeeper_authorize!, only: :destroy
 
   # GET /users/sign_in
   def new
@@ -19,21 +19,18 @@ class Users::SessionsController < Devise::SessionsController
   # DELETE /users/sign_out
   def destroy
     Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+    application_ids = Doorkeeper::Application.pluck(:id)
+    Doorkeeper::AccessToken.revoke_all_for(application_ids, current_user.id)
+    @current_user = nil
     self.resource = nil
     render json: { result: { message: 'Success' } }, status: :no_content
   end
 
   private
 
-  def verify_signed_out_user
-    render json: { result: { message: 'Success' } }, status: :no_content if all_signed_out?
-  end
+  def verify_signed_out_user; end
 
-  def all_signed_out?
-    users = Devise.mappings.keys.map { |s| warden.user(scope: s, run_callbacks: false) }
-
-    users.all?(&:blank?)
-  end
+  def all_signed_out?; end
 
   def already_authenticated?
     render json: { result: { message: 'Success' } }, status: :ok if warden.authenticated?(resource_name)
