@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 2021_02_04_153942) do
     t.boolean "success"
     t.string "failure_reason"
     t.string "user_type"
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.string "context"
     t.string "ip"
     t.text "user_agent"

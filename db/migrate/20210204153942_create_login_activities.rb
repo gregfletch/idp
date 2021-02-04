@@ -9,7 +9,7 @@ class CreateLoginActivities < ActiveRecord::Migration[6.1]
       t.string :identity
       t.boolean :success
       t.string :failure_reason
-      t.references :user, polymorphic: true
+      t.references :user, type: :uuid, polymorphic: true
       t.string :context
       t.string :ip
       t.text :user_agent
