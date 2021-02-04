@@ -127,6 +127,7 @@ GEM
     listen (3.4.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    logstop (0.2.6)
     loofah (2.8.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -291,6 +292,7 @@ DEPENDENCIES
   letter_opener
   letter_opener_web
   listen
+  logstop
   maxminddb
   pg
   puma

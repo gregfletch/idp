@@ -31,6 +31,8 @@ gem 'graphql'
 
 gem 'json-jwt'
 
+gem 'logstop'
+
 gem 'maxminddb'
 
 gem 'rack-cors'
