@@ -268,4 +268,11 @@ RSpec.describe User do
     user = create(:user, username: nil)
     expect(user.username).to eq(user.email)
   end
+
+  it 'can have multiple login activities' do
+    user = create(:user)
+    create_list(:login_activity, 5, user: user)
+
+    expect(user.login_activities.count).to eq(5)
+  end
 end

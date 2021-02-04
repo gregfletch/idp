@@ -108,6 +108,14 @@ RSpec.describe Users::SessionsController do
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to have_http_status(:ok)
     end
+
+    it 'increments the login activities count on authentication attempts' do
+      expect { post :create, params: params }.to change(LoginActivity, :count).by(1)
+    end
+
+    it 'increments the login activities count for the user on authentication attempts' do
+      expect { post :create, params: params }.to change(user.login_activities, :count).by(1)
+    end
   end
 
   #
