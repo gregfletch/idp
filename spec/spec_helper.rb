@@ -30,8 +30,11 @@ if ENV['COVERAGE'] || ENV['CI']
 
   SimpleCov.start do
     enable_coverage :branch
-    add_group 'Models', 'app/models'
     add_group 'Controllers', 'app/controllers'
+    add_group 'GraphQL', 'app/graphql'
+    add_group 'Initializers', 'config/initializers'
+    add_group 'Models', 'app/models'
+    add_group 'Specs', 'spec'
   end
 end
 

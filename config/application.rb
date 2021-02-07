@@ -18,6 +18,8 @@ module Idp
 
     config.autoload_paths += %W[#{config.root}/lib]
 
+    config.middleware.use Rack::Attack
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

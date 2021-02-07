@@ -35,6 +35,8 @@ gem 'logstop'
 
 gem 'maxminddb'
 
+gem 'rack-attack'
+
 gem 'rack-cors'
 
 group :development, :test do
