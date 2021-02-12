@@ -29,9 +29,11 @@ class Types::QueryType < Types::BaseObject
   end
 
   def login_activities(**args)
-    order = args[:order_by] || 'created_at'
-    direction = args[:direction] || 'ASC'
+    order = args[:order_by]
+    direction = args[:direction] || :desc
 
-    LoginActivity.where(user_id: args[:user_id]).order("#{order} #{direction}")
+    order = :created_at if order.blank? || LoginActivity.column_names.exclude?(order)
+
+    LoginActivity.where(user_id: args[:user_id]).order(ActiveRecord::Base.sanitize_sql_for_order("#{order} #{direction}"))
   end
 end

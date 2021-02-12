@@ -161,13 +161,34 @@ RSpec.describe Types::QueryType do
       expect(result.with_indifferent_access.dig(:data, :loginActivities, :totalCount)).to eq(login_activities.count)
     end
 
-    it 'returns the list of login activities ordered by created_at ASC by default' do
-      login_activity_ids = LoginActivity.order(created_at: :asc).pluck(:id)
+    it 'returns the list of login activities ordered by created_at DESC by default' do
+      login_activity_ids = LoginActivity.order(created_at: :desc).pluck(:id)
 
       result = IdpSchema.execute(query).as_json
       edges = result.with_indifferent_access.dig(:data, :loginActivities, :edges)
       expect(edges.map { |edge| edge[:node][:id] }).to eq(login_activity_ids)
     end
+
+    # rubocop:disable RSpec/ExampleLength
+    it 'returns the list of login activities ordered by created_at DESC if sort column is unknown' do
+      bad_query = %(query {
+        loginActivities(userId: "#{user.id}", orderBy: "unknown", direction: "DESC") {
+          totalCount
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      })
+
+      login_activity_ids = LoginActivity.order(created_at: :desc).pluck(:id)
+
+      result = IdpSchema.execute(bad_query).as_json
+      edges = result.with_indifferent_access.dig(:data, :loginActivities, :edges)
+      expect(edges.map { |edge| edge[:node][:id] }).to eq(login_activity_ids)
+    end
+    # rubocop:enable RSpec/ExampleLength
 
     it 'returns the list of login activities ordered based on the query parameters' do
       login_activity_ids = LoginActivity.order(id: :desc).pluck(:id)
