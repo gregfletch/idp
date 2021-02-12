@@ -6,11 +6,11 @@ RSpec.describe Types::UserType do
   let(:field_names) do
     %w[id username firstName lastName fullName createdAt updatedAt email resetPasswordToken resetPasswordSentAt rememberCreatedAt signInCount
        currentSignInAt lastSignInAt currentSignInIp lastSignInIp confirmationToken confirmedAt confirmationSentAt unconfirmedEmail
-       failedAttempts unlockToken lockedAt confirmed]
+       failedAttempts unlockToken lockedAt confirmed loginActivities]
   end
 
-  it 'has 24 fields defined' do
-    expect(described_class.fields.keys.count).to eq(24)
+  it 'has 25 fields defined' do
+    expect(described_class.fields.keys.count).to eq(25)
   end
 
   it 'matches the list of field names' do

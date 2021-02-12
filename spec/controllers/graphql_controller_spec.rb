@@ -57,7 +57,7 @@ describe GraphqlController do
 
         let(:query_email_variable) do
           'query($email: String) {
-            users(email: $email) {
+            user(email: $email) {
               id
               fullName
             }
@@ -66,7 +66,7 @@ describe GraphqlController do
 
         let(:query_id_variable) do
           'query($id: ID) {
-            users(id: $id) {
+            user(id: $id) {
               id
               fullName
             }
@@ -90,52 +90,111 @@ describe GraphqlController do
           create_list(:user, 5, :skip_validate)
           request.headers[:Authorization] = "Bearer #{access_token}"
           post :execute, params: { query: query_email_variable, variables: { email: user.email } }
-          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :users).count).to eq(1)
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user, :id)).to eq(user.id)
         end
 
         it 'returns a user object matching the email variable containing only the requested attributes' do
           create_list(:user, 5, :skip_validate)
           request.headers[:Authorization] = "Bearer #{access_token}"
           post :execute, params: { query: query_email_variable, variables: { email: user.email } }
-          expected_result = [{ id: user.id, fullName: user.full_name }]
-          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :users)).to eq(expected_result)
+          expected_result = { id: user.id, fullName: user.full_name }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to eq(expected_result)
         end
 
         it 'returns a single user result matching the provided id variable' do
           create_list(:user, 5, :skip_validate)
           request.headers[:Authorization] = "Bearer #{access_token}"
           post :execute, params: { query: query_id_variable, variables: { id: user.id } }
-          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :users).count).to eq(1)
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user, :id)).to eq(user.id)
         end
 
         it 'returns a user object matching the id variable containing only the requested attributes' do
           create_list(:user, 5, :skip_validate)
           request.headers[:Authorization] = "Bearer #{access_token}"
           post :execute, params: { query: query_id_variable, variables: { id: user.id } }
-          expected_result = [{ id: user.id, fullName: user.full_name }]
-          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :users)).to eq(expected_result)
+          expected_result = { id: user.id, fullName: user.full_name }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to eq(expected_result)
         end
 
         it 'returns matching user when variable is a String' do
           request.headers[:Authorization] = "Bearer #{access_token}"
           post :execute, params: { query: query_id_variable, variables: { id: user.id }.to_json }
-          expected_result = [{ id: user.id, fullName: user.full_name }]
-          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :users)).to eq(expected_result)
+          expected_result = { id: user.id, fullName: user.full_name }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to eq(expected_result)
         end
 
         it 'returns matching user when variable is a Hash' do
           request.headers[:Authorization] = "Bearer #{access_token}"
           post :execute, params: { query: query_id_variable, variables: { id: user.id }.to_h }
-          expected_result = [{ id: user.id, fullName: user.full_name }]
-          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :users)).to eq(expected_result)
+          expected_result = { id: user.id, fullName: user.full_name }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to eq(expected_result)
         end
 
-        it 'returns all users if variable is an empty string - treated as no variable' do
+        it 'returns null user if no variable passed to user query' do
           create_list(:user, 5, :skip_validate)
           request.headers[:Authorization] = "Bearer #{access_token}"
           post :execute, params: { query: query_id_variable, variables: '' }
-          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :users).count).to eq(6)
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to be_nil
         end
+
+        it 'returns null user for unknown user ID' do
+          create_list(:user, 5, :skip_validate)
+          request.headers[:Authorization] = "Bearer #{access_token}"
+          post :execute, params: { query: query_id_variable, variables: { id: SecureRandom.uuid }.to_h }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to be_nil
+        end
+
+        it 'returns null user for unknown user email' do
+          create_list(:user, 5, :skip_validate)
+          request.headers[:Authorization] = "Bearer #{access_token}"
+          post :execute, params: { query: query_id_variable, variables: { email: 'unknown@mail.com' }.to_h }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to be_nil
+        end
+
+        # rubocop:disable RSpec/ExampleLength
+        it 'returns list of login activities for the user if requested' do
+          query = 'query($id: ID) {
+            user(id: $id) {
+              id
+              fullName
+              loginActivities {
+                totalCount
+              }
+            }
+          }'
+
+          create_list(:login_activity, 3)
+          create_list(:login_activity, 3, user: user)
+          request.headers[:Authorization] = "Bearer #{access_token}"
+          post :execute, params: { query: query, variables: { id: user.id }.to_h }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user, :loginActivities, :totalCount)).to eq(3)
+        end
+        # rubocop:enable RSpec/ExampleLength
+
+        # rubocop:disable RSpec/ExampleLength
+        it 'returns the login activity context' do
+          query = 'query($id: ID) {
+            user(id: $id) {
+              id
+              fullName
+              loginActivities {
+                edges {
+                  node {
+                    id
+                    context
+                  }
+                }
+              }
+            }
+          }'
+
+          login_activity = create(:login_activity, user: user)
+          request.headers[:Authorization] = "Bearer #{access_token}"
+          post :execute, params: { query: query, variables: { id: user.id }.to_h }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user, :loginActivities,
+                                                                      :edges).first[:node][:context]).to eq(login_activity.context)
+        end
+        # rubocop:enable RSpec/ExampleLength
 
         it 'returns an error on invalid query' do
           invalid_query = 'query {

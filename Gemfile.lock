@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/gregfletch/batch-loader
+  revision: 0d8126c36c9746d44dac402ec8418cceb70c1a36
+  specs:
+    batch-loader (1.5.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -279,6 +285,7 @@ PLATFORMS
 
 DEPENDENCIES
   authtrail
+  batch-loader!
   bootsnap
   brakeman
   bundler-audit

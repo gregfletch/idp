@@ -18,6 +18,8 @@ gem 'puma'
 
 gem 'authtrail'
 
+gem 'batch-loader', git: 'https://github.com/gregfletch/batch-loader'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap'
 
