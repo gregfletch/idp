@@ -132,7 +132,7 @@ RSpec.describe Types::QueryType do
 
     let(:query) do
       %(query {
-        loginActivities(userId: "#{user.id}") {
+        loginActivities {
           totalCount
           edges {
             node {
@@ -145,7 +145,7 @@ RSpec.describe Types::QueryType do
 
     let(:query_with_sort) do
       %(query {
-        loginActivities(userId: "#{user.id}", orderBy: "id", direction: "DESC") {
+        loginActivities(orderBy: "id", direction: "DESC") {
           totalCount
           edges {
             node {
@@ -157,14 +157,14 @@ RSpec.describe Types::QueryType do
     end
 
     it 'returns the list of login activities for the specified user' do
-      result = IdpSchema.execute(query).as_json
+      result = IdpSchema.execute(query, context: { current_user: user }).as_json
       expect(result.with_indifferent_access.dig(:data, :loginActivities, :totalCount)).to eq(login_activities.count)
     end
 
     it 'returns the list of login activities ordered by created_at DESC by default' do
       login_activity_ids = LoginActivity.order(created_at: :desc).pluck(:id)
 
-      result = IdpSchema.execute(query).as_json
+      result = IdpSchema.execute(query, context: { current_user: user }).as_json
       edges = result.with_indifferent_access.dig(:data, :loginActivities, :edges)
       expect(edges.map { |edge| edge[:node][:id] }).to eq(login_activity_ids)
     end
@@ -172,7 +172,7 @@ RSpec.describe Types::QueryType do
     # rubocop:disable RSpec/ExampleLength
     it 'returns the list of login activities ordered by created_at DESC if sort column is unknown' do
       bad_query = %(query {
-        loginActivities(userId: "#{user.id}", orderBy: "unknown", direction: "DESC") {
+        loginActivities(orderBy: "unknown", direction: "DESC") {
           totalCount
           edges {
             node {
@@ -184,7 +184,7 @@ RSpec.describe Types::QueryType do
 
       login_activity_ids = LoginActivity.order(created_at: :desc).pluck(:id)
 
-      result = IdpSchema.execute(bad_query).as_json
+      result = IdpSchema.execute(bad_query, context: { current_user: user }).as_json
       edges = result.with_indifferent_access.dig(:data, :loginActivities, :edges)
       expect(edges.map { |edge| edge[:node][:id] }).to eq(login_activity_ids)
     end
@@ -193,30 +193,19 @@ RSpec.describe Types::QueryType do
     it 'returns the list of login activities ordered based on the query parameters' do
       login_activity_ids = LoginActivity.order(id: :desc).pluck(:id)
 
-      result = IdpSchema.execute(query_with_sort).as_json
+      result = IdpSchema.execute(query_with_sort, context: { current_user: user }).as_json
       edges = result.with_indifferent_access.dig(:data, :loginActivities, :edges)
       expect(edges.map { |edge| edge[:node][:id] }).to eq(login_activity_ids)
     end
 
-    it 'returns error if missing required parameter' do
+    it 'returns an empty list if no login activities can be found for the provided user ID' do
       bad_query = %(query {
         loginActivities {
           totalCount
         }
       })
 
-      result = IdpSchema.execute(bad_query).as_json
-      expect(result.with_indifferent_access[:errors].first[:message]).to eq("Field 'loginActivities' is missing required arguments: userId")
-    end
-
-    it 'returns an empty list if no login activities can be found for the provided user ID' do
-      bad_query = %(query {
-        loginActivities(userId: "#{SecureRandom.uuid}") {
-          totalCount
-        }
-      })
-
-      result = IdpSchema.execute(bad_query).as_json
+      result = IdpSchema.execute(bad_query, context: { current_user: create(:user, :confirmed_user) }).as_json
       expect(result.with_indifferent_access.dig(:data, :loginActivities, :totalCount)).to eq(0)
     end
   end

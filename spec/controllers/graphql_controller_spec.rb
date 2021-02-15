@@ -130,11 +130,12 @@ describe GraphqlController do
           expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to eq(expected_result)
         end
 
-        it 'returns null user if no variable passed to user query' do
+        it 'returns current user if no variable passed to user query' do
           create_list(:user, 5, :skip_validate)
           request.headers[:Authorization] = "Bearer #{access_token}"
           post :execute, params: { query: query_id_variable, variables: '' }
-          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to be_nil
+          expected_result = { id: user.id, fullName: user.full_name }
+          expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :user)).to eq(expected_result)
         end
 
         it 'returns null user for unknown user ID' do
@@ -226,8 +227,8 @@ describe GraphqlController do
 
       describe 'user mutation' do
         let(:mutation) do
-          'mutation ($id: ID!, $firstName: String, $lastName: String) {
-            updateUser(id: $id, firstName: $firstName, lastName: $lastName) {
+          'mutation ($firstName: String, $lastName: String) {
+            updateUser(firstName: $firstName, lastName: $lastName) {
               user {
                 id
                 fullName
@@ -245,33 +246,33 @@ describe GraphqlController do
 
         it 'response does not contain errors on success' do
           request.headers[:Authorization] = "Bearer #{access_token}"
-          post :execute, params: { query: mutation, variables: { id: user.id } }
+          post :execute, params: { query: mutation }
           expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :updateUser, :errors)).to eq([])
         end
 
         it 'user is unchanged if no variables provided to change attributes' do
           request.headers[:Authorization] = "Bearer #{access_token}"
           full_name = user.full_name
-          post :execute, params: { query: mutation, variables: { id: user.id } }
+          post :execute, params: { query: mutation }
           expect(user.reload.full_name).to eq(full_name)
         end
 
         it 'user is updated on successful mutation' do
           request.headers[:Authorization] = "Bearer #{access_token}"
-          post :execute, params: { query: mutation, variables: { id: user.id, firstName: 'Updated', lastName: 'Name' } }
+          post :execute, params: { query: mutation, variables: { firstName: 'Updated', lastName: 'Name' } }
           expect(user.reload.full_name).to eq('Updated Name')
         end
 
         it 'does not update user on invalid mutation' do
           request.headers[:Authorization] = "Bearer #{access_token}"
           expected_result = user.full_name
-          post :execute, params: { query: mutation, variables: { id: user.id, firstName: 'a' * 129, lastName: 'Name' } }
+          post :execute, params: { query: mutation, variables: { firstName: 'a' * 129, lastName: 'Name' } }
           expect(user.reload.full_name).to eq(expected_result)
         end
 
         it 'returns errors on invalid mutation' do
           request.headers[:Authorization] = "Bearer #{access_token}"
-          post :execute, params: { query: mutation, variables: { id: user.id, firstName: 'a' * 129, lastName: 'Name' } }
+          post :execute, params: { query: mutation, variables: { firstName: 'a' * 129, lastName: 'Name' } }
           expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :updateUser, :errors).count).not_to eq(0)
         end
       end
