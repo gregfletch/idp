@@ -29,7 +29,7 @@ RSpec.describe Mutations::ChangePasswordMutation do
 
   let(:mutation_invalid_new_password) do
     %(mutation {
-      changePassword(password: "#{'a' * 129}", currentPassword: "Password1") {
+      changePassword(password: "#{'a' * 8}", currentPassword: "Password1") {
         user {
           id
         }
