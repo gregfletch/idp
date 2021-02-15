@@ -9,7 +9,6 @@ class Types::QueryType < Types::BaseObject
   end
 
   field :login_activities, Types::LoginActivityType.connection_type, null: false, description: 'Returns a list of all login activities' do
-    argument :user_id, ID, required: true
     argument :order_by, String, required: false
     argument :direction, String, required: false
   end
@@ -22,7 +21,7 @@ class Types::QueryType < Types::BaseObject
     return User.find_by!(email: args[:email]) if args[:email].present?
     return User.find(args[:id]) if args[:id].present?
 
-    nil
+    context[:current_user]
   rescue ActiveRecord::RecordNotFound
     Rails.logger.error('Unable to find the requested user')
     nil
@@ -34,6 +33,6 @@ class Types::QueryType < Types::BaseObject
 
     order = :created_at if order.blank? || LoginActivity.column_names.exclude?(order)
 
-    LoginActivity.where(user_id: args[:user_id]).order(ActiveRecord::Base.sanitize_sql_for_order("#{order} #{direction}"))
+    LoginActivity.where(user_id: context[:current_user].id).order(ActiveRecord::Base.sanitize_sql_for_order("#{order} #{direction}"))
   end
 end
