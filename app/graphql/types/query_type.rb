@@ -33,6 +33,6 @@ class Types::QueryType < Types::BaseObject
 
     order = :created_at if order.blank? || LoginActivity.column_names.exclude?(order)
 
-    LoginActivity.where(user_id: context[:current_user].id).order(ActiveRecord::Base.sanitize_sql_for_order("#{order} #{direction}"))
+    LoginActivity.for_user(context[:current_user]).order(ActiveRecord::Base.sanitize_sql_for_order("#{order} #{direction}"))
   end
 end
