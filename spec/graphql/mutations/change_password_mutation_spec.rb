@@ -38,6 +38,17 @@ RSpec.describe Mutations::ChangePasswordMutation do
     })
   end
 
+  let(:mutation_duplicate_password) do
+    %(mutation {
+      changePassword(password: "Password1", currentPassword: "Password1") {
+        user {
+          id
+        }
+        errors
+      }
+    })
+  end
+
   it 'returns the the requested user info on success' do
     result = IdpSchema.execute(mutation, context: { current_user: user }).as_json
     expect(result.with_indifferent_access.dig(:data, :changePassword, :user)).to eq({ id: user.id }.with_indifferent_access)
@@ -50,6 +61,11 @@ RSpec.describe Mutations::ChangePasswordMutation do
 
   it 'returns error if new password is invalid' do
     result = IdpSchema.execute(mutation_invalid_new_password, context: { current_user: user }).as_json
+    expect(result.with_indifferent_access.dig(:data, :changePassword, :errors).count).to eq(1)
+  end
+
+  it 'returns error if new password is the same as the current password' do
+    result = IdpSchema.execute(mutation_duplicate_password, context: { current_user: user }).as_json
     expect(result.with_indifferent_access.dig(:data, :changePassword, :errors).count).to eq(1)
   end
 end

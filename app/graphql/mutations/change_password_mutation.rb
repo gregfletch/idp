@@ -8,8 +8,10 @@ class Mutations::ChangePasswordMutation < Mutations::BaseMutation
   field :errors, [String], null: false
 
   def resolve(**args)
+    return { errors: ['New password cannot be the same as the current password'] } if args[:current_password] == args[:password]
+
     user = context[:current_user]
-    return { errors: ['Incorrect current password'] } unless user.active_for_authentication? && user.valid_password?(args[:current_password])
+    return { errors: ['Current password is incorrect'] } unless user.active_for_authentication? && user.valid_password?(args[:current_password])
 
     user.password = args[:password]
     if user.save
