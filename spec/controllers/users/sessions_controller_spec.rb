@@ -35,7 +35,8 @@ RSpec.describe Users::SessionsController do
 
     it 'returns a well-defined response format on success' do
       post :create, params: params
-      expect(JSON.parse(response.body, symbolize_names: true)).to eq({ result: { message: 'Success', user: { id: user.id } } })
+      session = user.reload.sessions.last
+      expect(JSON.parse(response.body, symbolize_names: true)).to eq({ result: { message: 'Success', user: { id: user.id, session_id: session.id } } })
     end
 
     it 'sets the current_sign_in_ip  on success' do

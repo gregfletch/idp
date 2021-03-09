@@ -275,4 +275,58 @@ RSpec.describe User do
 
     expect(user.login_activities.count).to eq(5)
   end
+
+  it 'deletes all associated login activities when user is deleted' do
+    user = create(:user)
+    create_list(:login_activity, 5, user: user)
+
+    expect do
+      user.destroy
+    end.to change(LoginActivity, :count).by(-5)
+  end
+
+  it 'can have multiple sessions' do
+    user = create(:user)
+    create_list(:session, 5, user: user)
+
+    expect(user.sessions.count).to eq(5)
+  end
+
+  it 'deletes all associated sessions when user is deleted' do
+    user = create(:user)
+    create_list(:session, 5, user: user)
+
+    expect do
+      user.destroy
+    end.to change(Session, :count).by(-5)
+  end
+
+  #
+  # #authenticate
+  #
+  describe 'self.authenticate' do
+    it 'returns nil if user cannot be found' do
+      expect(described_class.authenticate('unknown@mail.com', 'Password1')).to be_nil
+    end
+
+    it 'returns nil if user is not yet confirmed' do
+      user = create(:user, :unconfirmed_user, :skip_validate)
+      expect(described_class.authenticate(user.email, 'Password1')).to be_nil
+    end
+
+    it 'returns nil if user is locked' do
+      user = create(:user, :locked_user, :skip_validate)
+      expect(described_class.authenticate(user.email, 'Password1')).to be_nil
+    end
+
+    it 'returns nil if user password is incorrect' do
+      user = create(:user, :confirmed_user, :skip_validate)
+      expect(described_class.authenticate(user.email, 'WrongPassword')).to be_nil
+    end
+
+    it 'returns user object if password is correct and user is active' do
+      user = create(:user, :confirmed_user, :skip_validate, password: 'Password1')
+      expect(described_class.authenticate(user.email, 'Password1')).to eq(user)
+    end
+  end
 end
