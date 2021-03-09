@@ -13,7 +13,8 @@ class Users::SessionsController < Devise::SessionsController
   def create
     self.resource = warden.authenticate!(auth_options)
     sign_in(resource_name, resource)
-    render json: { result: { message: 'Success', user: { id: resource.id } } }, status: :ok
+    session = Session.create!(user: resource)
+    render json: { result: { message: 'Success', user: { id: resource.id, session_id: session.id } } }, status: :ok
   end
 
   # DELETE /users/sign_out

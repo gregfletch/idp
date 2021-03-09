@@ -23,7 +23,8 @@ class User < ApplicationRecord
 
   has_many :access_grants, class_name: 'Doorkeeper::AccessGrant', foreign_key: :resource_owner_id, dependent: :delete_all, inverse_of: false
   has_many :access_tokens, class_name: 'Doorkeeper::AccessToken', foreign_key: :resource_owner_id, dependent: :delete_all, inverse_of: false
-  has_many :login_activities, as: :user, dependent: :delete_all
+  has_many :login_activities, as: :user, dependent: :destroy
+  has_many :sessions, dependent: :destroy
 
   def full_name
     "#{first_name} #{last_name}"
@@ -34,10 +35,6 @@ class User < ApplicationRecord
     return nil if user.blank?
 
     user.active_for_authentication? && user.valid_password?(password) ? user : nil
-  end
-
-  def active_for_authentication?
-    confirmed_at.present?
   end
 
   private

@@ -8,14 +8,20 @@ Doorkeeper.configure do
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
     # :nocov:
-    User.find_by(email: params[:email])
+    # Grab the session that was created within the last 5 minutes and has not yet been consumed
+    session = Session.includes(:user).where(id: params[:session_id], consumed_at: nil, created_at: 5.minutes.ago..Time.now.utc).first
+    return nil if session.blank?
+
+    # mark the session as consumed so that the same session ID cannot be used again to generate a new access token and refresh token
+    session.update!(consumed_at: Time.now.utc.iso8601)
+    session.user
     # :nocov:
   end
 
-  resource_owner_from_credentials do |_routes|
-    user = User.authenticate(params[:email], params[:password])
-    request.env['warden'].set_user(user, scope: :user, store: false) if user.present?
-  end
+  # resource_owner_from_credentials do |_routes|
+  #   user = User.authenticate(params[:email], params[:password])
+  #   request.env['warden'].set_user(user, scope: :user, store: false) if user.present?
+  # end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
   # file then you need to declare this block in order to restrict access to the web interface for
@@ -97,7 +103,7 @@ Doorkeeper.configure do
   # Access token expiration time (default: 2 hours).
   # If you want to disable expiration, set this to `nil`.
   #
-  access_token_expires_in 4.hours
+  access_token_expires_in 2.hours
 
   # Assign custom TTL for access tokens. Will be used instead of access_token_expires_in
   # option if defined. In case the block returns `nil` value Doorkeeper fallbacks to
@@ -350,7 +356,7 @@ Doorkeeper.configure do
   #   http://tools.ietf.org/html/rfc6819#section-4.4.2
   #   http://tools.ietf.org/html/rfc6819#section-4.4.3
   #
-  grant_flows(%w[authorization_code refresh_token password])
+  grant_flows(%w[authorization_code refresh_token])
 
   # Allows to customize OAuth grant flows that +each+ application support.
   # You can configure a custom block (or use a class respond to `#call`) that must
@@ -507,7 +513,7 @@ Doorkeeper::JWT.configure do
       sub: Rails.application.config.subject,
       aud: Rails.application.config.audience,
       iat: Time.current.utc.to_i,
-      exp: (Time.current.utc + 4.hours).to_i,
+      exp: (Time.current.utc + 2.hours).to_i,
 
       # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7
       jti: SecureRandom.uuid,
