@@ -26,6 +26,7 @@ class Types::UserType < Types::BaseObject
   field :locked_at, GraphQL::Types::ISO8601DateTime, null: true
   field :confirmed, Boolean, null: false
   field :login_activities, Types::LoginActivityType.connection_type, null: true
+  field :session_id, ID, null: true
 
   def confirmed
     object.confirmed_at.present?
@@ -37,5 +38,9 @@ class Types::UserType < Types::BaseObject
         loader.call(login_activity.user_id) { |memo| memo << login_activity }
       end
     end
+  end
+
+  def session_id
+    Session.where(user_id: object.id).last&.id
   end
 end
