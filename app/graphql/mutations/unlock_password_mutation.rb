@@ -18,6 +18,9 @@ class Mutations::UnlockPasswordMutation < Mutations::BaseMutation
   private
 
   def initiate_unlock(email)
+    user = User.find_by(email: email)
+    return { errors: ['Unknown user email address'] } if user.blank?
+
     user = User.send_unlock_instructions({ email: email })
     { user: user, errors: [] }
   end

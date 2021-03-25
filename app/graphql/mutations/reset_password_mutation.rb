@@ -13,6 +13,8 @@ class Mutations::ResetPasswordMutation < Mutations::BaseMutation
     return validation_result if validation_result.present?
 
     user = User.find_by(email: args[:email])
+    return { errors: ['Unknown user email address'] } if args[:email].present? && user.blank?
+
     if user.present?
       user.send_reset_password_instructions
       return { user: user, errors: [] }

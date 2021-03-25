@@ -20,10 +20,15 @@ describe GraphqlController do
         expect(response).to have_http_status(:forbidden)
       end
 
-      it 'returns forbidden if email variable does not match current user email' do
+      it 'returns unauthorized if email variable does not match current user email' do
         access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
         allow(controller).to receive(:doorkeeper_token) { access_token }
         request.headers[:Authorization] = "Bearer #{access_token}"
+        post :execute, params: { variables: { email: 'unknown.user@mail.com' } }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'returns unauthorized if email variable is present and no current user for protected requests' do
         post :execute, params: { variables: { email: 'unknown.user@mail.com' } }
         expect(response).to have_http_status(:unauthorized)
       end
@@ -35,6 +40,15 @@ describe GraphqlController do
         post :execute, params: { variables: { id: SecureRandom.uuid } }
         expect(response).to have_http_status(:unauthorized)
       end
+
+      # it 'returns unauthorized if the user email variable does not match the current user email' do
+      #   query = 'query($email: String) {
+      #       user(email: $email) {
+      #         id
+      #         fullName
+      #       }
+      #     }'
+      # end
     end
 
     context 'when authorized' do
@@ -326,24 +340,31 @@ describe GraphqlController do
         end
 
         it 'returns ok on successful initiate password reset requests' do
-          post :execute, params: { query: request_reset_password_mutation, variables: { email: user.email } }
+          post :execute, params: { query: request_reset_password_mutation, variables: { email: user.email }, operationName: 'InitiateResetPasswordMutation' }
           expect(response).to have_http_status(:ok)
         end
 
         it 'returns ok on reset password success' do
           create(:user, :confirmed_user, password: 'Password1', reset_password_sent_at: Time.now.utc.iso8601, reset_password_token: reset_password_token.last)
-          post :execute, params: { query: reset_password_mutation, variables: { password: 'Password1', resetToken: reset_password_token.first } }
+          post :execute,
+               params: { query: reset_password_mutation, variables: { password: 'Password1', resetToken: reset_password_token.first },
+                         operationName: 'resetpassword' }
           expect(response).to have_http_status(:ok)
         end
 
         it 'returns ok on successful initiate password unlock requests' do
-          post :execute, params: { query: request_unlock_password_mutation, variables: { email: user.email } }
+          post :execute, params: { query: request_unlock_password_mutation, variables: { email: user.email }, operationName: 'InitiateUnlockPasswordMutation' }
           expect(response).to have_http_status(:ok)
         end
 
         it 'returns ok on unlock password success' do
           create(:user, :confirmed_user, password: 'Password1', locked_at: Time.now.utc.iso8601, unlock_token: unlock_token.last)
-          post :execute, params: { query: unlock_password_mutation, variables: { unlockToken: unlock_token.first } }
+          post :execute, params: { query: unlock_password_mutation, variables: { unlockToken: unlock_token.first }, operationName: 'unlockpassword' }
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns ok on introspection queries with no authorization token' do
+          post :execute, params: { operationName: 'IntrospectionQuery' }
           expect(response).to have_http_status(:ok)
         end
       end

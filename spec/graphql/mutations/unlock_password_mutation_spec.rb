@@ -71,4 +71,17 @@ RSpec.describe Mutations::UnlockPasswordMutation do
     result = IdpSchema.execute(unlock_password_mutation_unknown_unlock_token).as_json
     expect(result.with_indifferent_access.dig(:data, :unlockPassword, :errors).first).to eq('Unlock token is invalid')
   end
+
+  it 'returns an error if the user cannot be found by email' do
+    mutation = %(mutation {
+      unlockPassword(email: "unknown@mail.com") {
+        user {
+          id
+        }
+        errors
+      }
+    })
+    result = IdpSchema.execute(mutation).as_json
+    expect(result.with_indifferent_access.dig(:data, :unlockPassword, :errors).first).to eq('Unknown user email address')
+  end
 end

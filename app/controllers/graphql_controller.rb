@@ -47,19 +47,18 @@ class GraphqlController < ApplicationController
   end
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/AbcSize
   def user_authorized?
     return if public_mutation?
     return render json: { errors: [{ error: 'Unauthorized' }] }, status: :unauthorized if variables[:email].present? && variables[:email] != current_user&.email
     return render json: { errors: [{ error: 'Unauthorized' }] }, status: :unauthorized if variables[:id] && variables[:id] != current_user.id
 
-    # Allow the introspection query to be publicly accessible
-    doorkeeper_authorize! unless params[:operationName] == 'IntrospectionQuery'
+    doorkeeper_authorize!
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/AbcSize
 
   def public_mutation?
-    params[:operationName]&.match?(/.*ResetPassword.*|.*UnlockPassword.*/i)
+    params[:operationName]&.match?(/.*ResetPassword.*|.*UnlockPassword.*/i) || params[:operationName] == 'IntrospectionQuery'
   end
 
   def variables
