@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
-  before_action :doorkeeper_authorize!, only: :execute
   before_action :user_authorized?, only: :execute
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,
@@ -48,11 +47,15 @@ class GraphqlController < ApplicationController
   end
   # rubocop:enable Metrics/MethodLength
 
+  # rubocop:disable Metrics/AbcSize
   def user_authorized?
     return render json: { errors: [{ error: 'Unauthorized' }] }, status: :unauthorized if variables[:email].present? && variables[:email] != current_user.email
+    return render json: { errors: [{ error: 'Unauthorized' }] }, status: :unauthorized if variables[:id] && variables[:id] != current_user.id
 
-    render json: { errors: [{ error: 'Unauthorized' }] }, status: :unauthorized if variables[:id] && variables[:id] != current_user.id
+    # Allow the introspection query to be publicly accessible
+    doorkeeper_authorize! unless params[:operationName] == 'IntrospectionQuery'
   end
+  # rubocop:enable Metrics/AbcSize
 
   def variables
     @variables ||= prepare_variables(params[:variables])

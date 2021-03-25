@@ -147,5 +147,7 @@ Style/NilLambda:
   Enabled: true
 Style/RedundantArgument:
   Enabled: true
+Style/StringChars:
+  Enabled: true
 Style/SwapValues:
   Enabled: true
