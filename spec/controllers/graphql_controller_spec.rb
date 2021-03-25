@@ -276,6 +276,77 @@ describe GraphqlController do
           expect(JSON.parse(response.body, symbolize_names: true).dig(:data, :updateUser, :errors).count).not_to eq(0)
         end
       end
+
+      describe 'publicly accessible mutations' do
+        let(:request_reset_password_mutation) do
+          %(mutation InitiateResetPasswordMutation($email: String) {
+            resetPassword(email: $email) {
+              user {
+                id
+              }
+              errors
+            }
+          })
+        end
+
+        let(:reset_password_token) { Devise.token_generator.generate(User, :reset_password_token) }
+        let(:unlock_token) { Devise.token_generator.generate(User, :unlock_token) }
+        let(:reset_password_mutation) do
+          %(mutation resetpassword ($resetToken: String, $password: String) {
+            resetPassword(resetToken: $resetToken, password: $password) {
+              user {
+                id
+                sessionId
+              }
+              errors
+            }
+          })
+        end
+
+        let(:request_unlock_password_mutation) do
+          %(mutation InitiateUnlockPasswordMutation($email: String) {
+            unlockPassword(email: $email) {
+              user {
+                id
+              }
+              errors
+            }
+          })
+        end
+
+        let(:unlock_password_mutation) do
+          %(mutation unlockPassword($unlockToken: String) {
+            unlockPassword(unlockToken: $unlockToken) {
+              user {
+                id
+              }
+              errors
+            }
+          })
+        end
+
+        it 'returns ok on successful initiate password reset requests' do
+          post :execute, params: { query: request_reset_password_mutation, variables: { email: user.email } }
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns ok on reset password success' do
+          create(:user, :confirmed_user, password: 'Password1', reset_password_sent_at: Time.now.utc.iso8601, reset_password_token: reset_password_token.last)
+          post :execute, params: { query: reset_password_mutation, variables: { password: 'Password1', resetToken: reset_password_token.first } }
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns ok on successful initiate password unlock requests' do
+          post :execute, params: { query: request_unlock_password_mutation, variables: { email: user.email } }
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns ok on unlock password success' do
+          create(:user, :confirmed_user, password: 'Password1', locked_at: Time.now.utc.iso8601, unlock_token: unlock_token.last)
+          post :execute, params: { query: unlock_password_mutation, variables: { unlockToken: unlock_token.first } }
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
   end
 end
