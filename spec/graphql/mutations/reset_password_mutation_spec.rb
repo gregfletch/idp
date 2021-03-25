@@ -145,4 +145,17 @@ RSpec.describe Mutations::ResetPasswordMutation do
     result = IdpSchema.execute(reset_password_mutation_invalid_password).as_json
     expect(result.with_indifferent_access.dig(:data, :resetPassword, :errors).count).to eq(1)
   end
+
+  it 'returns an error if the user cannot be found by email' do
+    mutation = %(mutation {
+      resetPassword(email: "unknown@mail.com") {
+        user {
+          id
+        }
+        errors
+      }
+    })
+    result = IdpSchema.execute(mutation).as_json
+    expect(result.with_indifferent_access.dig(:data, :resetPassword, :errors).first).to eq('Unknown user email address')
+  end
 end
