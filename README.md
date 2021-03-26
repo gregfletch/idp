@@ -6,7 +6,7 @@ This is a simple identity provider (IdP) service. In this README you will find i
 
 ### Installing Ruby
 
-Install the latest version of Ruby with brew - `brew install ruby`. Once Ruby is installed (this may take a while as it has to build native binaries), install bundler so that you can install Ruby dependencies - `gem install bundler`.
+Install the latest version of Ruby and chruby to manage Ruby versions with brew - `brew install chruby ruby-install`. Once this is completed, use ruby-install to install the latest version of Ruby (`ruby-install`) and use chruby to select this version of Ruby on completion. Once Ruby is installed (this may take a while as it has to build native binaries), install bundler so that you can install Ruby dependencies - `gem install bundler`.
 
 ### Installing Dependencies
 
