@@ -19,7 +19,7 @@ class PasswordCompositionValidator < ActiveModel::EachValidator
     insensitive_value = value.downcase
 
     # Check for sequential (i.e. 'abcd', '1234')
-    insensitive_value.each_char.slice_when { |a, b| a.succ != b }.select { |c| c.size >= 4 }.map(&:join).present?
+    insensitive_value.each_char.slice_when { |a, b| a.succ != b }.filter_map { |c| c.join if c.size >= 4 }.present?
   end
 
   def reverse_sequential_characters?(value)
