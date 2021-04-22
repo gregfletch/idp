@@ -58,6 +58,8 @@ Performance/CollectionLiteralInLoop:
   Enabled: true
 Performance/ConstantRegexp:
   Enabled: true
+Performance/MapCompact:
+  Enabled: true
 Performance/MethodObjectAsBlock:
   Enabled: true
 Performance/RedundantEqualityComparisonBlock:
@@ -69,6 +71,8 @@ Performance/RedundantSplitRegexpArgument:
 Performance/RedundantStringChars:
   Enabled: true
 Performance/ReverseFirst:
+  Enabled: true
+Performance/SelectMap:
   Enabled: true
 Performance/SortReverse:
   Enabled: true
