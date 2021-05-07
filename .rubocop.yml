@@ -89,6 +89,8 @@ Rails/AfterCommitOverride:
   Enabled: true
 Rails/AttributeDefaultBlockValue:
   Enabled: true
+Rails/EnvironmentVariableAccess:
+  Enabled: true
 Rails/FilePath:
   EnforcedStyle: arguments
 Rails/FindById:
@@ -112,6 +114,8 @@ Rails/RenderPlainText:
 Rails/ShortI18n:
   Enabled: true
 Rails/SquishedSQLHeredocs:
+  Enabled: true
+Rails/TimeZoneAssignment:
   Enabled: true
 Rails/WhereEquals:
   Enabled: true
