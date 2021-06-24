@@ -76,7 +76,7 @@ GEM
       railties (>= 5.2)
       warden
     bcrypt (3.1.16)
-    bindata (2.4.9)
+    bindata (2.4.10)
     bindex (0.8.1)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
