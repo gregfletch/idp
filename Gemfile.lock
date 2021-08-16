@@ -70,9 +70,8 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     aes_key_wrap (1.1.0)
     ast (2.4.2)
-    authtrail (0.3.1)
+    authtrail (0.4.1)
       activerecord (>= 5.2)
-      geocoder
       railties (>= 5.2)
       warden
     bcrypt (3.1.16)
@@ -111,7 +110,6 @@ GEM
     faker (2.18.0)
       i18n (>= 1.6, < 2)
     ffi (1.15.3)
-    geocoder (1.6.7)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     graphql (1.12.14)
