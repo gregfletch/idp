@@ -70,9 +70,8 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     aes_key_wrap (1.1.0)
     ast (2.4.2)
-    authtrail (0.3.1)
+    authtrail (0.4.1)
       activerecord (>= 5.2)
-      geocoder
       railties (>= 5.2)
       warden
     bcrypt (3.1.16)
@@ -294,6 +293,7 @@ DEPENDENCIES
   doorkeeper-jwt
   factory_bot_rails
   faker
+  geocoder
   graphql
   json-jwt
   letter_opener

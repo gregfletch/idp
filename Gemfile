@@ -29,6 +29,8 @@ gem 'devise'
 gem 'doorkeeper'
 gem 'doorkeeper-jwt'
 
+gem 'geocoder'
+
 gem 'graphql'
 
 gem 'json-jwt'
