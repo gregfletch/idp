@@ -39,7 +39,7 @@ RSpec.describe Users::SessionsController do
       expect(JSON.parse(response.body, symbolize_names: true)).to eq({ result: { message: 'Success', user: { id: user.id, session_id: session.id } } })
     end
 
-    it 'sets the current_sign_in_ip  on success' do
+    it 'sets the current_sign_in_ip on success' do
       post :create, params: params
       expect(User.last.current_sign_in_ip).to match(Resolv::IPv4::Regex)
     end
