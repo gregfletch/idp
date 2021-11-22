@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class Mutations::UnlockPasswordMutation < Mutations::BaseMutation
-  argument :unlock_token, String, required: false
-  argument :email, String, required: false
+  description 'A mutation to unlock a user password which has become locked due to too many failed authentication attempts.'
 
-  field :user, Types::UserType, null: true
-  field :errors, [String], null: false
+  argument :email, String, required: false, description: 'The email address associated with the user account.'
+  argument :unlock_token, String, required: false, description: 'The secure token used to unlock the user account.'
+
+  field :errors, [String], null: false, description: 'The list of error messages resulting from the attempted user update.'
+  field :user, Types::UserType, null: true, description: 'The user object to be returned.'
 
   def resolve(**args)
     validation_result = validate_params(args)

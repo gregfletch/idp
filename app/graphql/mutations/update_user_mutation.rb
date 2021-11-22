@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class Mutations::UpdateUserMutation < Mutations::BaseMutation
-  argument :first_name, String, required: false
-  argument :last_name, String, required: false
+  description 'A mutation to update basic user information.'
 
-  field :user, Types::UserType, null: true
-  field :errors, [String], null: false
+  argument :first_name, String, required: false, description: 'The new first name for the current user.'
+  argument :last_name, String, required: false, description: 'The new last name for the current user.'
+
+  field :errors, [String], null: false, description: 'The list of error messages resulting from the attempted user update.'
+  field :user, Types::UserType, null: true, description: 'The updated user object to be returned.'
 
   def resolve(first_name: nil, last_name: nil)
     user = context[:current_user]
