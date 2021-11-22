@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
 class Types::QueryType < Types::BaseObject
+  description 'Defines the list of queries which can be performed and the required and optional fields that can be used to filter query results.'
+
   field :users, [Types::UserType], null: false, description: 'Returns a list of users'
 
   field :user, Types::UserType, null: true, description: 'Returns the user matching the provided ID or email' do
-    argument :email, String, required: false
-    argument :id, ID, required: false
+    argument :email, String, required: false, description: 'The email address of the user.'
+    argument :id, ID, required: false, description: 'The unique identifier of the user.'
   end
 
   field :login_activities, Types::LoginActivityType.connection_type, null: false, description: 'Returns a list of all login activities' do
-    argument :order_by, String, required: false
-    argument :direction, String, required: false
+    argument :direction, String, required: false, description: 'The direction to order the list of login activities.'
+    argument :order_by, String, required: false, description: 'The column name to order the list of login activities by.'
   end
 
   def users

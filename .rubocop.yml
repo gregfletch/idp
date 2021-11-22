@@ -1,4 +1,5 @@
 require:
+  - rubocop-graphql
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
@@ -8,6 +9,9 @@ AllCops:
 
 Gemspec/DateAssignment:
   Enabled: true
+
+GraphQL/ExtractType:
+  Enabled: false
 
 Layout/LineLength:
   Max: 160

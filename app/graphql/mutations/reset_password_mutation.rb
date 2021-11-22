@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 class Mutations::ResetPasswordMutation < Mutations::BaseMutation
-  argument :password, String, required: false
-  argument :reset_token, String, required: false
-  argument :email, String, required: false
+  description 'A mutation for resetting a user password for a user who has forgotten their current password.'
 
-  field :user, Types::UserType, null: true
-  field :errors, [String], null: false
+  argument :email, String, required: false, description: 'The email address associated with the user account.'
+  argument :password, String, required: false, description: 'The new password value that the user wishes to set.'
+
+  # rubocop:disable GraphQL/ExtractInputType
+  argument :reset_token, String, required: false, description: 'The secure token used to reset the user password.'
+  # rubocop:enable GraphQL/ExtractInputType
+
+  field :errors, [String], null: false, description: 'The list of error messages resulting from the attempted user update.'
+  field :user, Types::UserType, null: true, description: 'The user object to be returned.'
 
   def resolve(**args)
     validation_result = validate_params(args)
