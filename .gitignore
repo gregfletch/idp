@@ -34,3 +34,5 @@
 /.idea
 
 *.iml
+
+/config/credentials/development.key
