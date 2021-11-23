@@ -81,5 +81,5 @@ jobs:
           PGUSER: postgres
           PGPASSWORD: postgres
           COVERAGE: true
-          DEVISE_TWO_FACTOR_ENCRYPTION_KEY: ${{ secrets.DEVISE_TWO_FACTOR_ENCRYPTION_KEY }}
+          RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: bundle exec rspec
