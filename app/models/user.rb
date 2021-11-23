@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  devise :two_factor_authenticatable,
+         otp_secret_encryption_key: Rails.application.credentials.devise_two_factor_encryption_key
+
+  devise :two_factor_backupable, otp_backup_code_length: 16, otp_number_of_backup_codes: 10
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable, :recoverable, :validatable, :trackable, :confirmable,
-         :lockable, :timeoutable
+  devise :registerable, :recoverable, :validatable, :trackable, :confirmable, :lockable, :timeoutable, :two_factor_backupable
 
   validates :username, presence: true, length: 1..255, uniqueness: true
   validates :first_name, presence: true, length: 1..128, name: true

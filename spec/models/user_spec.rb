@@ -1,12 +1,20 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'devise_two_factor/spec_helpers'
 
 RSpec.describe User do
   let(:name_max_length) { 128 }
   let(:email_max_length) { 255 }
   let(:password_max_length) { name_max_length }
   let(:password_min_length) { 8 }
+
+  describe 'two factor' do
+    subject(:user) { create(:user, :confirmed_user) }
+
+    it_behaves_like 'two_factor_authenticatable'
+    it_behaves_like 'two_factor_backupable'
+  end
 
   it 'is valid with valid attributes' do
     user = build(:user)

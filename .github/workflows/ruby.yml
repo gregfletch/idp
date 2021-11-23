@@ -81,4 +81,6 @@ jobs:
           PGUSER: postgres
           PGPASSWORD: postgres
           COVERAGE: true
+          RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: bundle exec rspec

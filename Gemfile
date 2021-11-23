@@ -26,6 +26,7 @@ gem 'bootsnap'
 gem 'bundler-audit'
 
 gem 'devise'
+gem 'devise-two-factor'
 gem 'doorkeeper'
 gem 'doorkeeper-jwt'
 

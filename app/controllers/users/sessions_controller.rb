@@ -3,6 +3,7 @@
 class Users::SessionsController < Devise::SessionsController
   prepend_before_action :already_authenticated?, only: :create
   prepend_before_action :doorkeeper_authorize!, only: :destroy
+  before_action :configure_permitted_parameters, if: :devise_controller?
 
   # GET /users/sign_in
   def new
@@ -38,4 +39,8 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def require_no_authentication; end
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:otp_attempt])
+  end
 end
