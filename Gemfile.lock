@@ -72,7 +72,7 @@ GEM
     ast (2.4.2)
     attr_encrypted (3.1.0)
       encryptor (~> 3.0.0)
-    authtrail (0.4.1)
+    authtrail (0.4.2)
       activerecord (>= 5.2)
       railties (>= 5.2)
       warden
@@ -143,7 +143,7 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logstop (0.2.8)
-    loofah (2.12.0)
+    loofah (2.13.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
