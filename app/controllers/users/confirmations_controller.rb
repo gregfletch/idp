@@ -26,6 +26,6 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   end
 
   def handle_error_response_show(resource)
-    render json: { errors: resource.errors.errors.each.map { |e| [e.attribute, e.type] }.to_h }, status: :bad_request
+    render json: { errors: resource.errors.errors.each.to_h { |e| [e.attribute, e.type] } }, status: :bad_request
   end
 end
