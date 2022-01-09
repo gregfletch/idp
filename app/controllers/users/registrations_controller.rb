@@ -68,7 +68,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # rubocop:enable Metrics/AbcSize
 
   def handle_error_response_create(resource)
-    render json: { errors: [resource.errors.errors.each.map { |e| ['error', e.full_message] }.to_h] }, status: :bad_request
+    render json: { errors: [resource.errors.errors.each.to_h { |e| ['error', e.full_message] }] }, status: :bad_request
   end
 
   # Override super class method to prevent errors if a user hits an endpoint that we have not implemented/are not
